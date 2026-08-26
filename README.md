@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Travel Site
 
-## Getting Started
+## プロジェクト概要
 
-First, run the development server:
+ホテルを検索し、部屋の空き状況や料金を確認して宿泊予約ができる旅行予約サイトです。ユーザー登録・ログイン機能を備え、ログイン後は予約の確認や予約履歴の管理を行えます。
+
+## 使用技術
+
+- Next.js 16（Pages Router）
+- React 19
+- TypeScript 5
+- PostgreSQL（`pg`）
+- bcrypt（パスワードのハッシュ化）
+- Tailwind CSS 4 / PostCSS
+- ESLint 9
+- Node.js 20.20.0（Voltaで指定）
+
+## 主な機能
+
+- 目的地（エリア）によるホテル検索
+- ホテル一覧・ホテル詳細の表示
+- 部屋、宿泊日、宿泊人数を指定した予約
+- ユーザー登録、ログイン、ログアウト
+- ログインユーザー情報の取得
+- 予約完了画面、予約履歴の確認
+- 予約のキャンセル
+- HTTP Only Cookieを利用したログイン状態の保持
+
+## 使い方
+
+1. トップページで目的地を入力し、「検索する」を選択します。
+2. ホテル一覧からホテルを選び、詳細ページで部屋と宿泊条件を指定します。
+3. 未ログインの場合はログインまたは新規登録を行います。
+4. 予約内容を確認し、「予約を確定する」を選択します。
+5. マイページから予約履歴の確認や予約のキャンセルを行えます。
+
+## セットアップ手順
+
+### 前提条件
+
+- Node.js 20.x
+- npm
+- PostgreSQL
+
+### インストール
+
+```bash
+npm install
+```
+
+### 環境変数の設定
+
+プロジェクト直下に `.env.local` を作成し、PostgreSQLへの接続文字列を設定します。
+
+```env
+DATABASE_URL=postgresql://ユーザー名:パスワード@localhost:5432/データベース名
+```
+
+データベースには、アプリケーションが使用する `users`、`hotels`、`rooms`、`bookings` などのテーブルを用意してください。
+
+### 開発サーバーの起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ブラウザで [http://localhost:3000](http://localhost:3000) を開きます。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 本番用コマンド
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+コード品質を確認する場合は、次のコマンドを実行します。
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ディレクトリ構成
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+travel-site/
+├── public/                    # 画像などの静的ファイル
+├── src/
+│   ├── components/            # 共通コンポーネント
+│   │   └── Header.tsx
+│   ├── lib/                   # DB接続・認証処理
+│   │   ├── auth.ts
+│   │   └── db.ts
+│   ├── pages/                 # Pages RouterのページとAPI
+│   │   ├── _app.tsx
+│   │   ├── index.tsx          # トップページ
+│   │   ├── login.tsx          # ログイン
+│   │   ├── signup.tsx         # 新規登録
+│   │   ├── api/               # API Routes
+│   │   ├── booking/           # 予約フロー
+│   │   ├── hotels/            # ホテル一覧・詳細
+│   │   └── mypage/            # マイページ
+│   └── styles/
+│       └── globals.css        # グローバルスタイル
+├── next.config.ts
+├── package.json
+├── postcss.config.mjs
+├── tsconfig.json
+└── eslint.config.mjs
+```
