@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:init": "psql \"$DATABASE_URL\" -f db/init.sql",
-    "db:seed": "psql \"$DATABASE_URL\" -f db/seed.sql"
+    "db:init": "set -a; [ ! -f .env.local ] || . ./.env.local; set +a; psql \"${DATABASE_URL:?DATABASE_URL is not set}\" -f db/init.sql",
+    "db:seed": "set -a; [ ! -f .env.local ] || . ./.env.local; set +a; psql \"${DATABASE_URL:?DATABASE_URL is not set}\" -f db/seed.sql"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
