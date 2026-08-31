@@ -31,12 +31,17 @@ sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -d "$DB_NAME" -c "ALTER DATABASE \"$D
 sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -d "$DB_NAME" -c "GRANT ALL PRIVILEGES ON DATABASE \"$DB_NAME\" TO \"$DB_USER\";"
 sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -d "$DB_NAME" -c "GRANT ALL PRIVILEGES ON SCHEMA public TO \"$DB_USER\";"
 sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -d "$DB_NAME" -c "ALTER SCHEMA public OWNER TO \"$DB_USER\";"
-sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -d "$DB_NAME" -c "ALTER TABLE public.bookings OWNER TO \"$DB_USER\";"
-sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -d "$DB_NAME" -c "ALTER TABLE public.rooms OWNER TO \"$DB_USER\";"
-sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -d "$DB_NAME" -c "ALTER TABLE public.hotels OWNER TO \"$DB_USER\";"
-sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -d "$DB_NAME" -c "ALTER SEQUENCE public.bookings_id_seq OWNER TO \"$DB_USER\";"
-sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -d "$DB_NAME" -c "ALTER SEQUENCE public.rooms_id_seq OWNER TO \"$DB_USER\";"
-sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -d "$DB_NAME" -c "ALTER SEQUENCE public.hotels_id_seq OWNER TO \"$DB_USER\";"
+sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -v db_user="$DB_USER" -d "$DB_NAME" <<'SQL'
+SELECT format('ALTER TABLE %s OWNER TO %I;', object_name, :'db_user')
+FROM unnest(ARRAY['public.bookings', 'public.rooms', 'public.hotels']) AS objects(object_name)
+WHERE to_regclass(object_name) IS NOT NULL;
+\gexec
+
+SELECT format('ALTER SEQUENCE %s OWNER TO %I;', object_name, :'db_user')
+FROM unnest(ARRAY['public.bookings_id_seq', 'public.rooms_id_seq', 'public.hotels_id_seq']) AS objects(object_name)
+WHERE to_regclass(object_name) IS NOT NULL;
+\gexec
+SQL
 sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -d "$DB_NAME" -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO \"$DB_USER\";"
 sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -d "$DB_NAME" -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO \"$DB_USER\";"
 sudo -u "$PG_USER" psql -v ON_ERROR_STOP=1 -d "$DB_NAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO \"$DB_USER\";"

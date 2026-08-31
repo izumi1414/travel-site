@@ -33,5 +33,9 @@ CREATE TABLE IF NOT EXISTS bookings (
   check_out DATE NOT NULL,
   guests_count INTEGER NOT NULL,
   total_price INTEGER NOT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'confirmed',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE bookings
+ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'confirmed';
