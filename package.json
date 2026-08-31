@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:init": "psql \"$DATABASE_URL\" -f db/init.sql",
+    "db:seed": "psql \"$DATABASE_URL\" -f db/seed.sql"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
