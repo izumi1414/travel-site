@@ -48,15 +48,37 @@
 npm install
 ```
 
+### PostgreSQL の準備
+
+まず PostgreSQL のユーザーとデータベースを作成します。
+
+```bash
+chmod +x db/setup-db.sh
+./db/setup-db.sh
+```
+
+このスクリプトは、必要に応じて `travel_user` / `travel_pass` / `travel_site` を作成し、DB の所有者と `public` スキーマ権限を正しく設定します。
+既にデータベースが存在していて権限が不足している場合でも、再実行で修正できます。
+
 ### 環境変数の設定
 
 プロジェクト直下に `.env.local` を作成し、PostgreSQLへの接続文字列を設定します。
 
 ```env
-DATABASE_URL=postgresql://ユーザー名:パスワード@localhost:5432/データベース名
+DATABASE_URL=postgresql://travel_user:travel_pass@localhost:5432/travel_site
 ```
 
-データベースには、アプリケーションが使用する `users`、`hotels`、`rooms`、`bookings` などのテーブルを用意してください。
+初期化用の SQL を実行して、必要なテーブルを作成します。
+
+```bash
+npm run db:init
+```
+
+必要に応じて、サンプルデータを投入できます。
+
+```bash
+npm run db:seed
+```
 
 ### 開発サーバーの起動
 
